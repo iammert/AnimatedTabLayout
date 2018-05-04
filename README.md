@@ -9,6 +9,8 @@ Yet another tab layout.
 # Motivation
 Thanks to [Igor](https://dribbble.com/motionigor) for sharing this awesome animation. I motivated myself to create android library.
 
+[Check out the concept](https://www.uplabs.com/posts/phone-app-animation-asus-zenui-6-0-concept)
+
 # Setup
 * Create your tabs file under res/xml/ folder.
 ```html
