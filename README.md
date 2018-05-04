@@ -57,7 +57,7 @@ atl.setTabChangeListener(object : AnimatedTabLayout.OnChangeListener {
 ```
 
 # Dependency
-```
+```gradle
 allprojects {
     repositories {
         ...
@@ -66,7 +66,7 @@ allprojects {
 }
 
 dependencies {
-      implementation 'com.github.iammert:AnimatedTabLayout:-SNAPSHOT'
+      implementation 'com.github.iammert:AnimatedTabLayout:0.1'
 }
 ```
 
