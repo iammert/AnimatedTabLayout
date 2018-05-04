@@ -55,6 +55,22 @@ atl.setTabChangeListener(object : AnimatedTabLayout.OnChangeListener {
 ```
 
 # Dependency
+```
+allprojects {
+    repositories {
+        ...
+        maven { url 'https://jitpack.io' }
+    }
+}
+
+dependencies {
+      implementation 'com.github.iammert:AnimatedTabLayout:-SNAPSHOT'
+}
+```
+
+# TODO
+- [ ] Animated Vector Drawable on tab expand.
+- [ ] tabMode support(scrolling, fixed)
 
 License
 --------
