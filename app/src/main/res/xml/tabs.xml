@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tabs size="@dimen/size"
+    space="@dimen/space">
+
+    <tab
+        inactiveColor="@color/colorGray"
+        activeColor="@color/colorOrange"
+        drawable="@drawable/ic_star_white_24dp"/>
+
+    <tab
+        inactiveColor="@color/colorGray"
+        activeColor="@color/colorBlue"
+        drawable="@drawable/ic_dialpad_white_24dp"/>
+
+    <tab
+        inactiveColor="@color/colorGray"
+        activeColor="@color/colorRed"
+        drawable="@drawable/ic_access_time_white_24dp"/>
+
+    <tab
+        inactiveColor="@color/colorGray"
+        activeColor="@color/colorPurple"
+        drawable="@drawable/ic_account_circle_white_24dp"/>
+</tabs>
