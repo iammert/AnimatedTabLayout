@@ -3,13 +3,12 @@ package com.iammert.library
 import android.content.Context
 import android.os.Build
 import android.os.Handler
-import android.support.annotation.RequiresApi
-import android.support.annotation.StyleRes
-import android.support.v4.view.ViewPager
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
 import android.widget.LinearLayout
+import androidx.annotation.RequiresApi
+import androidx.viewpager.widget.ViewPager
 
 class AnimatedTabLayout : FrameLayout {
 
@@ -40,7 +39,7 @@ class AnimatedTabLayout : FrameLayout {
     }
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes) {
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes) {
         init(context, attrs, defStyleAttr, defStyleRes)
     }
 

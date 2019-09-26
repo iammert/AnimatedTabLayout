@@ -7,12 +7,12 @@ import android.content.Context
 import android.graphics.*
 import android.graphics.drawable.Drawable
 import android.os.Build
-import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.core.content.ContextCompat
 
 class AnimatedTabItemView : LinearLayout {
 
@@ -62,10 +62,10 @@ class AnimatedTabItemView : LinearLayout {
         maskPaint = Paint(Paint.ANTI_ALIAS_FLAG)
         maskPaint?.xfermode = PorterDuffXfermode(PorterDuff.Mode.DST_IN)
 
-        layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
         gravity = Gravity.CENTER
 
-        val imageViewLayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        val imageViewLayoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
         imageView = ImageView(context)
         imageView?.layoutParams = imageViewLayoutParams
         addView(imageView)
@@ -87,7 +87,9 @@ class AnimatedTabItemView : LinearLayout {
 
         path?.reset()
         path?.addRoundRect(rectF, radius, radius, Path.Direction.CCW)
-        canvas.drawPath(path, maskPaint)
+        path?.let {
+            canvas.drawPath(path!!, maskPaint!!)
+        }
     }
 
     fun setFromColor(fromColor: Int) {

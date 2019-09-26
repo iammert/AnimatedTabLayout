@@ -10,19 +10,19 @@ class AnimatedTabItemContainer : LinearLayout {
     private var tabItem: AnimatedTabItemView? = null
 
     constructor(context: Context) : super(context) {
-        init(context, null)
+        init(context)
     }
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
-        init(context, attrs)
+        init(context)
     }
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
-        init(context, attrs)
+        init(context)
     }
 
-    private fun init(context: Context, attrs: AttributeSet?) {
-        layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+    private fun init(context: Context) {
+        layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
         gravity = Gravity.CENTER_VERTICAL
         tabItem = AnimatedTabItemView(context)
         addView(tabItem)
@@ -54,7 +54,7 @@ class AnimatedTabItemContainer : LinearLayout {
     }
 
     private fun updateLayoutParams(config: AnimatedTabItemConfig){
-        val params: LinearLayout.LayoutParams = layoutParams as LayoutParams
+        val params: LayoutParams = layoutParams as LayoutParams
         params.setMargins(config.space,0,config.space, 0)
         layoutParams = params
     }

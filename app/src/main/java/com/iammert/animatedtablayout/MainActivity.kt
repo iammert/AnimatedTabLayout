@@ -1,9 +1,8 @@
 package com.iammert.animatedtablayout
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.support.v4.view.ViewPager
-import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
+import androidx.viewpager.widget.ViewPager
 import com.iammert.library.AnimatedTabLayout
 
 class MainActivity : AppCompatActivity() {
