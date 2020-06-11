@@ -84,12 +84,22 @@ class AnimatedTabItemView : LinearLayout {
         val save = canvas!!.save()
         super.dispatchDraw(canvas)
         canvas.restoreToCount(save)
+        path?.let {
+            canvas.drawPath(it, maskPaint!!)
+        }
+    }
 
+    override fun draw(canvas: Canvas?) {
+        path?.let {
+            canvas?.clipPath(it)
+        }
+        super.draw(canvas)
+    }
+
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        super.onSizeChanged(w, h, oldw, oldh)
         path?.reset()
         path?.addRoundRect(rectF, radius, radius, Path.Direction.CCW)
-        path?.let {
-            canvas.drawPath(path!!, maskPaint!!)
-        }
     }
 
     fun setFromColor(fromColor: Int) {
