@@ -151,11 +151,11 @@ class AnimatedTabItemView @JvmOverloads constructor(
         createAnimatorSet()
     }
 
-    private fun initializeSize(mSize: Float) {
-        this.size = mSize
-        width = mSize
-        height = mSize
-        radius = mSize / 2
+    private fun initializeSize(size: Float) {
+        this.size = size
+        width = size
+        height = size
+        radius = size / 2
         rectF?.set(0f, 0f, width, height)
     }
 
