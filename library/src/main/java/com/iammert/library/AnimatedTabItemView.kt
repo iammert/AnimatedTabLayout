@@ -115,8 +115,8 @@ class AnimatedTabItemView @JvmOverloads constructor(
         }
     }
 
-    fun setItemSize(mSize: Float) {
-        initializeSize(mSize)
+    fun setItemSize(size: Float) {
+        initializeSize(size)
         initializeAnimators()
         requestLayout()
     }
