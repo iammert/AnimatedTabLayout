@@ -1,56 +1,46 @@
 package com.iammert.library
 
 import android.content.Context
-import android.os.Build
-import android.os.Handler
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
 import android.widget.LinearLayout
-import androidx.annotation.RequiresApi
 import androidx.viewpager.widget.ViewPager
 
-class AnimatedTabLayout : FrameLayout {
+class AnimatedTabLayout @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0,
+    defStyleRes: Int = 0
+) : FrameLayout(context, attrs, defStyleAttr) {
 
-    interface OnChangeListener{
+    interface OnChangeListener {
         fun onChanged(position: Int)
     }
 
-    lateinit var containerLinearLayout: LinearLayout
+    private var containerLinearLayout: LinearLayout
 
-    lateinit var tabs: List<AnimatedTabItemContainer>
+    private var tabs: List<AnimatedTabItemContainer>
 
-    lateinit var selectedTab: AnimatedTabItemContainer
+    private lateinit var selectedTab: AnimatedTabItemContainer
 
-    lateinit var viewPager: ViewPager
+    private lateinit var viewPager: ViewPager
 
     private var onChangeListener: OnChangeListener? = null
 
-    constructor(context: Context) : super(context) {
-        init(context, null, 0, 0)
-    }
+    private val typedArray = context.theme?.obtainStyledAttributes(
+        attrs,
+        R.styleable.AnimatedTabLayout,
+        defStyleAttr,
+        defStyleRes
+    )
 
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
-        init(context, attrs, 0, 0)
-    }
-
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
-        init(context, attrs, defStyleAttr, 0)
-    }
-
-    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes) {
-        init(context, attrs, defStyleAttr, defStyleRes)
-    }
-
-
-    private fun init(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) {
-        val typedArray = context?.theme?.obtainStyledAttributes(attrs, R.styleable.AnimatedTabLayout, defStyleAttr, defStyleRes)
+    init {
         val tabXmlResource = typedArray?.getResourceId(R.styleable.AnimatedTabLayout_atl_tabs, 0)
 
         tabs = AnimatedTabResourceParser(context, tabXmlResource!!).parse()
 
-        val layoutInflater = LayoutInflater.from(getContext())
+        val layoutInflater = LayoutInflater.from(context)
         val parentView = layoutInflater.inflate(R.layout.view_tablayout_container, this, true)
         containerLinearLayout = parentView.findViewById(R.id.linear_layout_container)
 
@@ -64,7 +54,7 @@ class AnimatedTabLayout : FrameLayout {
         }
     }
 
-    fun setTabChangeListener(onChangeListener: OnChangeListener?){
+    fun setTabChangeListener(onChangeListener: OnChangeListener?) {
         this.onChangeListener = onChangeListener
     }
 
@@ -75,19 +65,20 @@ class AnimatedTabLayout : FrameLayout {
         selectedTab.expand()
     }
 
-    private var onPageChangeListener: ViewPager.OnPageChangeListener = object : ViewPager.SimpleOnPageChangeListener() {
-        override fun onPageSelected(position: Int) {
-            super.onPageSelected(position)
-            if (tabs[position] == selectedTab) {
-                return
-            }
-            selectedTab.collapse()
-            selectedTab = tabs[position]
-            selectedTab.expand()
+    private var onPageChangeListener: ViewPager.OnPageChangeListener =
+        object : ViewPager.SimpleOnPageChangeListener() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                if (tabs[position] == selectedTab) {
+                    return
+                }
+                selectedTab.collapse()
+                selectedTab = tabs[position]
+                selectedTab.expand()
 
-            this@AnimatedTabLayout.onChangeListener?.onChanged(position)
+                this@AnimatedTabLayout.onChangeListener?.onChanged(position)
+            }
         }
-    }
 
 }
 
