@@ -14,13 +14,17 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 
-class AnimatedTabItemView : LinearLayout {
+class AnimatedTabItemView @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : LinearLayout(context, attrs, defStyleAttr) {
 
     enum class State {
         COLLAPSED, EXPANDED
     }
 
-    private var mSize: Float = 0.0f
+    private var size: Float = 0.0f
 
     private var fromColor: Int = 0
     private var toColor: Int = 0
@@ -38,25 +42,13 @@ class AnimatedTabItemView : LinearLayout {
     private var iconColorAnimator: ValueAnimator? = null
     private var animatorSet: AnimatorSet? = null
 
-    private var mWidth: Float = 0.0f
-    private var mHeight: Float = 0.0f
+    private var width: Float = 0.0f
+    private var height: Float = 0.0f
     private var radius: Float = 0.0f
 
     private var imageView: ImageView? = null
 
-    constructor(context: Context) : super(context) {
-        init(context, null)
-    }
-
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
-        init(context, attrs)
-    }
-
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
-        init(context, attrs)
-    }
-
-    private fun init(context: Context, attrs: AttributeSet?) {
+    init {
         path = Path()
         rectF = RectF(0f, 0f, 0f, 0f)
         maskPaint = Paint(Paint.ANTI_ALIAS_FLAG)
@@ -65,7 +57,8 @@ class AnimatedTabItemView : LinearLayout {
         layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
         gravity = Gravity.CENTER
 
-        val imageViewLayoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+        val imageViewLayoutParams =
+            LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
         imageView = ImageView(context)
         imageView?.layoutParams = imageViewLayoutParams
         addView(imageView)
@@ -77,7 +70,7 @@ class AnimatedTabItemView : LinearLayout {
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-        setMeasuredDimension(mWidth.toInt(), mHeight.toInt())
+        setMeasuredDimension(width.toInt(), height.toInt())
     }
 
     override fun dispatchDraw(canvas: Canvas?) {
@@ -134,7 +127,7 @@ class AnimatedTabItemView : LinearLayout {
         }
 
         state = State.EXPANDED
-        sizeAnimator?.setFloatValues(mSize, mSize * 2)
+        sizeAnimator?.setFloatValues(size, size * 2)
         layoutColorAnimator?.setObjectValues(fromColor, toColor)
         iconColorAnimator?.setObjectValues(iconFromColor, iconToColor)
         animatorSet?.start()
@@ -146,7 +139,7 @@ class AnimatedTabItemView : LinearLayout {
         }
 
         state = State.COLLAPSED
-        sizeAnimator?.setFloatValues(mSize * 2, mSize)
+        sizeAnimator?.setFloatValues(size * 2, size)
         layoutColorAnimator?.setObjectValues(toColor, fromColor)
         iconColorAnimator?.setObjectValues(iconToColor, iconFromColor)
         animatorSet?.start()
@@ -159,68 +152,77 @@ class AnimatedTabItemView : LinearLayout {
     }
 
     private fun initializeSize(mSize: Float) {
-        this.mSize = mSize
-        mWidth = mSize
-        mHeight = mSize
+        this.size = mSize
+        width = mSize
+        height = mSize
         radius = mSize / 2
-        rectF?.set(0f, 0f, mWidth, mHeight)
+        rectF?.set(0f, 0f, width, height)
     }
 
     private fun createSizeAnimator() {
         sizeAnimator = ValueAnimator.ofFloat(0f, 0f)
-                .also {
-                    it?.apply {
-                        duration = animDuration
-                        interpolator = DecelerateInterpolator()
-                        addUpdateListener { animation -> calculateBorders(animation.animatedValue as Float) }
-                    }
+            .also {
+                it?.apply {
+                    duration = animDuration
+                    interpolator = DecelerateInterpolator()
+                    addUpdateListener { animation -> calculateBorders(animation.animatedValue as Float) }
                 }
+            }
     }
 
     private fun createColorAnimator() {
         layoutColorAnimator = ValueAnimator.ofObject(ArgbEvaluator(), fromColor, toColor)
-                .also {
-                    it?.apply {
-                        duration = animDuration
-                        interpolator = DecelerateInterpolator()
-                        addUpdateListener { animation ->
-                            setBackgroundColor(animation.animatedValue as Int)
-                            postInvalidate()
-                        }
+            .also {
+                it?.apply {
+                    duration = animDuration
+                    interpolator = DecelerateInterpolator()
+                    addUpdateListener { animation ->
+                        setBackgroundColor(animation.animatedValue as Int)
+                        postInvalidate()
                     }
                 }
+            }
 
         iconColorAnimator = ValueAnimator.ofObject(ArgbEvaluator(), iconFromColor, iconToColor)
-                .also {
-                    it?.apply {
-                        duration = animDuration
-                        interpolator = DecelerateInterpolator()
-                        addUpdateListener { animation ->
-                            val drawable = imageView?.background
-                            drawable?.colorFilter = PorterDuffColorFilter(animation.animatedValue as Int, PorterDuff.Mode.SRC_IN)
-                            postInvalidate()
-                        }
+            .also {
+                it?.apply {
+                    duration = animDuration
+                    interpolator = DecelerateInterpolator()
+                    addUpdateListener { animation ->
+                        val drawable = imageView?.background
+                        drawable?.colorFilter = PorterDuffColorFilter(
+                            animation.animatedValue as Int,
+                            PorterDuff.Mode.SRC_IN
+                        )
+                        postInvalidate()
                     }
                 }
+            }
     }
 
     private fun createAnimatorSet() {
-        animatorSet = AnimatorSet().apply { playTogether(sizeAnimator, layoutColorAnimator, iconColorAnimator) }
+        animatorSet = AnimatorSet().apply {
+            playTogether(
+                sizeAnimator,
+                layoutColorAnimator,
+                iconColorAnimator
+            )
+        }
     }
 
     private fun calculateBorders(value: Float) {
         val params = layoutParams
         params.width = value.toInt()
         layoutParams = params
-        mWidth = value
-        mHeight = (mSize + ((value - mSize) * multiplier)).toFloat()
-        radius = mHeight / 2
-        rectF?.set(0f, 0f, mWidth, mHeight)
+        width = value
+        height = (size + ((value - size) * multiplier)).toFloat()
+        radius = height / 2
+        rectF?.set(0f, 0f, width, height)
         postInvalidate()
     }
 
     companion object {
-        //constants
+        // constants
         const val animDuration: Long = 300
         const val multiplier: Double = 0.15
     }
