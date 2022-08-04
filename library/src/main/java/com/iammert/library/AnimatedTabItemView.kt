@@ -99,7 +99,7 @@ class AnimatedTabItemView : LinearLayout {
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
         path?.reset()
-        path?.addRoundRect(rectF, radius, radius, Path.Direction.CCW)
+        path?.addRoundRect(rectF!!, radius, radius, Path.Direction.CCW)
     }
 
     fun setFromColor(fromColor: Int) {

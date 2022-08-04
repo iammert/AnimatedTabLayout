@@ -2,17 +2,17 @@ package com.iammert.library
 
 import android.content.Context
 import android.os.Build
-import android.os.Handler
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.annotation.RequiresApi
 import androidx.viewpager.widget.ViewPager
+import androidx.viewpager2.widget.ViewPager2
 
 class AnimatedTabLayout : FrameLayout {
 
-    interface OnChangeListener{
+    interface OnChangeListener {
         fun onChanged(position: Int)
     }
 
@@ -22,7 +22,8 @@ class AnimatedTabLayout : FrameLayout {
 
     lateinit var selectedTab: AnimatedTabItemContainer
 
-    lateinit var viewPager: ViewPager
+    private var viewPager: ViewPager? = null
+    private var viewPager2: ViewPager2? = null
 
     private var onChangeListener: OnChangeListener? = null
 
@@ -34,18 +35,32 @@ class AnimatedTabLayout : FrameLayout {
         init(context, attrs, 0, 0)
     }
 
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    ) {
         init(context, attrs, defStyleAttr, 0)
     }
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes) {
+    constructor(
+        context: Context,
+        attrs: AttributeSet?,
+        defStyleAttr: Int,
+        defStyleRes: Int
+    ) : super(context, attrs, defStyleAttr, defStyleRes) {
         init(context, attrs, defStyleAttr, defStyleRes)
     }
 
 
     private fun init(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) {
-        val typedArray = context?.theme?.obtainStyledAttributes(attrs, R.styleable.AnimatedTabLayout, defStyleAttr, defStyleRes)
+        val typedArray = context?.theme?.obtainStyledAttributes(
+            attrs,
+            R.styleable.AnimatedTabLayout,
+            defStyleAttr,
+            defStyleRes
+        )
         val tabXmlResource = typedArray?.getResourceId(R.styleable.AnimatedTabLayout_atl_tabs, 0)
 
         tabs = AnimatedTabResourceParser(context, tabXmlResource!!).parse()
@@ -59,35 +74,57 @@ class AnimatedTabLayout : FrameLayout {
             tab.setOnClickListener {
                 val selectedIndex = tabs.indexOf(tab)
                 onPageChangeListener.onPageSelected(selectedIndex)
-                viewPager.currentItem = selectedIndex
+                onPageChangeListenerPager2.onPageSelected(selectedIndex)
+                viewPager?.currentItem = selectedIndex
+                viewPager2?.currentItem = selectedIndex
             }
         }
     }
 
-    fun setTabChangeListener(onChangeListener: OnChangeListener?){
+    fun setTabChangeListener(onChangeListener: OnChangeListener?) {
         this.onChangeListener = onChangeListener
     }
 
     fun setupViewPager(viewPager: ViewPager) {
         this.viewPager = viewPager
-        this.viewPager.addOnPageChangeListener(onPageChangeListener)
+        this.viewPager?.addOnPageChangeListener(onPageChangeListener)
         selectedTab = tabs[viewPager.currentItem]
         selectedTab.expand()
     }
 
-    private var onPageChangeListener: ViewPager.OnPageChangeListener = object : ViewPager.SimpleOnPageChangeListener() {
-        override fun onPageSelected(position: Int) {
-            super.onPageSelected(position)
-            if (tabs[position] == selectedTab) {
-                return
-            }
-            selectedTab.collapse()
-            selectedTab = tabs[position]
-            selectedTab.expand()
-
-            this@AnimatedTabLayout.onChangeListener?.onChanged(position)
-        }
+    fun setupViewPager(viewPager: ViewPager2) {
+        this.viewPager2 = viewPager
+        this.viewPager2?.registerOnPageChangeCallback(onPageChangeListenerPager2)
+        selectedTab = tabs[viewPager.currentItem]
+        selectedTab.expand()
     }
 
+    private var onPageChangeListenerPager2: ViewPager2.OnPageChangeCallback =
+        object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                initSelectedTab(position)
+            }
+        }
+
+    private var onPageChangeListener: ViewPager.OnPageChangeListener =
+        object : ViewPager.SimpleOnPageChangeListener() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                initSelectedTab(position)
+            }
+        }
+
+    private fun initSelectedTab(position: Int) {
+        if (tabs[position] == selectedTab) {
+            return
+        }
+        selectedTab.collapse()
+        selectedTab = tabs[position]
+        selectedTab.expand()
+
+        this@AnimatedTabLayout.onChangeListener?.onChanged(position)
+
+    }
 }
 
