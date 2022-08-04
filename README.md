@@ -48,7 +48,7 @@ Thanks to [Igor](https://dribbble.com/motionigor) for sharing this awesome anima
         app:atl_tabs="@xml/tabs"/>
 ```
 * Setup with viewpager or listen change on tab click.
-```kotlin
+```kot  lin
 atl.setupViewPager(viewpager)
 atl.setTabChangeListener(object : AnimatedTabLayout.OnChangeListener {
     override fun onChanged(position: Int) {
